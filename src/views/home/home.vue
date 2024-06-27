@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" ref="homeRef">
     <home-nav-bar/>
     <div class="banner">
       <img src="@/assets/img/home/banner.webp" alt="">
@@ -32,9 +32,11 @@
   homeStore.fetchCategoriesData()
   //let currentPage = 1
   homeStore.fetchHouselistData()
-  
  
-const { isReachBottom, scrollTop } = useScroll()
+ //监听滚动到底部
+const homeRef = ref()
+const { isReachBottom, scrollTop } = useScroll(homeRef)
+
 watch(isReachBottom, (newValue) => {
   if (newValue) {
     homeStore.fetchHouselistData().then(() => {
@@ -49,9 +51,25 @@ const isShowSearchBar = ref(false)
 watch(scrollTop,(newTop) => {
   isShowSearchBar.value = newTop > 350
 })
+
+//跳转回home时，保留原来的位置
+onActivated(()=> {
+  homeRef.value?.scrollTo({
+    top:scrollTop.value
+  })
+})
+
+
+
 </script>
 
 <style lang="less" scoped>
+  .home{
+    padding-bottom: 60px;
+    height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
   .banner{
     img{
       width: 100%;

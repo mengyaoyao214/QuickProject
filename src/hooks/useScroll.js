@@ -1,5 +1,5 @@
-import { onMounted, onUnmounted, ref } from "vue"
-import {throttle} from 'underscore'
+import { onMounted, onUnmounted, ref } from "vue";
+import { throttle } from 'underscore'
 
 export default function useScroll(elRef){
   let el = window
@@ -16,17 +16,21 @@ export default function useScroll(elRef){
       clientHeight.value = document.documentElement.clientHeight//文档高度
       scrollTop.value = Math.ceil((document.documentElement.scrollTop))//滚了多少
       scrollHeight.value = document.documentElement.scrollHeight//总滚动区域
+      
     } else {
       clientHeight.value = el.clientHeight
-      scrollTop.value = el.scrollTop
+      scrollTop.value = Math.ceil(el.scrollTop)
       scrollHeight.value = el.scrollHeight
 
     }
+    
     if(clientHeight.value + scrollTop.value >= scrollHeight.value){
       
+      console.log("hhhhhhh")
       isReachBottom.value = true
       
     }
+    
   }, 100)
 
   onMounted(()=>{
@@ -37,9 +41,9 @@ export default function useScroll(elRef){
   })
 
   onUnmounted(() => {
-   el.addEventListener("scroll", scrollListenerHandler)
+    el.removeEventListener("scroll", scrollListenerHandler)
   })
 
-  return{clientHeight, scrollTop, scrollHeight}
+  return{ isReachBottom,clientHeight, scrollTop, scrollHeight}
 }
 
